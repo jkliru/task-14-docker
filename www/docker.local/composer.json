@@ -1,0 +1,5 @@
+{
+    "require": {
+        "jkliru/check-braces": "0.2.0"
+    }
+}

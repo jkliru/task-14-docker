@@ -1,0 +1,31 @@
+FROM php:7.2-fpm
+
+RUN apt-get update && apt-get install -y \
+        curl \
+        wget \
+        git \
+        libc-client-dev \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libkrb5-dev \
+        libpq-dev \
+        libmagickwand-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        zlib1g-dev \
+    && docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip gd
+
+# composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Добавим свой php.ini, можем в нем определять свои значения конфига
+ADD php.ini /usr/local/etc/php/conf.d/40-custom.ini
+
+# Указываем рабочую директорию для PHP
+WORKDIR /var/www
+
+# Запускаем контейнер
+# Из документации: The main purpose of a CMD is to provide defaults for an executing container. These defaults can include an executable,
+# or they can omit the executable, in which case you must specify an ENTRYPOINT instruction as well.
+CMD ["php-fpm"]
